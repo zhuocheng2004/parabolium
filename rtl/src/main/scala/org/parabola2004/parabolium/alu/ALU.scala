@@ -39,7 +39,7 @@ class ALU(implicit config: Config = Config()) extends Module {
   cmp.io.signed   := !io.funct3(0)
   cmp.io.carry    := adder.io.carry
 
-  val shifter = if (config.sim) Module(new ShifterSim) else Module(new Shifter)
+  val shifter = Module(new Shifter)
   shifter.io.in     := io.in1
   shifter.io.shamt  := io.in2(XLEN_WIDTH - 1, 0)
   shifter.io.left   := !io.funct3(2)
