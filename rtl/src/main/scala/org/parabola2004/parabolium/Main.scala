@@ -2,7 +2,7 @@ package org.parabola2004.parabolium
 
 import chisel3._
 import circt.stage.FirtoolOption
-import org.parabola2004.parabolium.alu.ALU
+import org.parabola2004.parabolium.idu.InstDecodeUnit
 
 object Main extends App {
   // to make verilator, iverilog, and yosys all happy
@@ -14,8 +14,7 @@ object Main extends App {
   // for simulation: verilator and iverilog
   emitVerilogForSim()
 
-  implicit val config: Config = Config()
-  println(getVerilogString(new ALU))
+  println(getVerilogString(new InstDecodeUnit))
 
   private def emitVerilogForSynth() = {
     implicit val config: Config = Config()

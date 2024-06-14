@@ -1,5 +1,5 @@
 
-name := "NRV-chisel"
+name := "Parabolium"
 
 scalaVersion := "2.13.12"
 

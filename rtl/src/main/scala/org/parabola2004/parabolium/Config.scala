@@ -2,7 +2,8 @@ package org.parabola2004.parabolium
 
 /*
  * Some Notes:
- *   Faster substitution modules for simulator case should pass formal equivalence verification.
+ *   - Faster substitution implementations for simulator case should pass formal equivalence verification.
+ *     Only then can we be confident about simulation results.
  */
 
 /**

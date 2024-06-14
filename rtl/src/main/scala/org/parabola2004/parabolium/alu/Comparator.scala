@@ -4,7 +4,7 @@ import chisel3._
 import org.parabola2004.parabolium.Defines.XLEN
 
 /**
- * The core part of [[Comparator]]
+ * the core part of [[Comparator]]
  *
  * It outputs whether `in1 < in2`
  *
@@ -32,7 +32,7 @@ class ComparatorCore extends Module {
 }
 
 /**
- * A comparator that outputs whether `in1 == in2` and whether `in1 < in2`
+ * a comparator that outputs whether `in1 == in2` and whether `in1 < in2`
  *
  * If `signed` is true, perform signed comparison (i.e. view inputs as signed numbers),
  * otherwise perform unsigned comparison.
@@ -55,10 +55,10 @@ class Comparator extends Module {
   val carry = adder.io.carry
 
   val cmp_core = Module(new ComparatorCore)
-  cmp_core.io.in1_sign := io.in1(XLEN - 1)
-  cmp_core.io.in2_sign := io.in2(XLEN - 1)
-  cmp_core.io.carry  := carry
-  cmp_core.io.signed := io.signed
+  cmp_core.io.in1_sign  := io.in1(XLEN - 1)
+  cmp_core.io.in2_sign  := io.in2(XLEN - 1)
+  cmp_core.io.carry     := carry
+  cmp_core.io.signed    := io.signed
 
   io.eq := diff === 0.U
   io.lt := cmp_core.io.lt
