@@ -43,8 +43,9 @@ class Shifter(implicit config: Config = Config()) extends Module {
                     logical_left_shift_result,
                     Mux(io.arith, arithmetic_right_shift_result, logical_right_shift_result))
 
-  // for formal verification
-  assert(out_faster === out_default)
+  if (config.formalTest) {
+    assert(out_faster === out_default)
+  }
 
   if (config.sim) {
     io.out  := out_faster

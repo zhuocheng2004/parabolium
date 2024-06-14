@@ -11,7 +11,7 @@ import org.parabola2004.parabolium.std.AXI5LiteIO
 /**
  * instruction fetch unit
  */
-class InstFetchUnit(config: Config = Config()) extends Module {
+class InstFetchUnit(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
     // action signal for fetching instruction
     val action    = Flipped(Decoupled())
@@ -50,7 +50,10 @@ class InstFetchUnit(config: Config = Config()) extends Module {
   // report unsuccessful read to simulator
   if (config.sim) {
     val errorRaw = Module(new ErrorRaw)
+    errorRaw.io.error_type := ErrorRaw.ERROR_IFU.U
     errorRaw.io.error := io.lsu.r_fire && io.lsu.rresp =/= AXI5LiteIO.OKAY
+    errorRaw.setDefaultInfo()
+    errorRaw.io.info0 := io.pc
   }
 
   // data to IDU

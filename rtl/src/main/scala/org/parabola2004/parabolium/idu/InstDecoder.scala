@@ -46,6 +46,7 @@ class InstDecoder extends Module {
 
   io.imm := MuxLookup(io.opcode, 0.U)(Seq(
     OpCode.OP_IMM   -> sign_extended_imm_i,
+    OpCode.LUI      -> imm_u_zeros,
     OpCode.AUIPC    -> imm_u_zeros,
     OpCode.JAL      -> Fill(11, imm_j(19)) ## imm_j ## 0.U(1.W),    // extend sign, x2
     OpCode.JALR     -> sign_extended_imm_i,

@@ -9,6 +9,7 @@ package org.parabola2004.parabolium
 /**
  * Configurations that control the generation of verilog
  *
- * @param sim Whether we are generating verilog for a simulator. Setting `true` for faster simulation.
+ * @param sim whether we are generating verilog for a simulator. Setting `true` for faster simulation
+ * @param formalTest whether to enable assert statements for formal tests
  */
-case class Config(sim: Boolean = false)
+case class Config(sim: Boolean = false, formalTest: Boolean = false)

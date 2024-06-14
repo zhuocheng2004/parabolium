@@ -6,10 +6,15 @@ RTL_TEST_DIR	:= $(RTL_DIR)/test_run_dir
 
 export SIM_DIR		:= $(PWD)/sim
 
+export PROG_DIR		:= $(PWD)/program
+
+GTKWAVE		?= gtkwave
 SBT		?= sbt
 VERILATOR	?= verilator
 
-export SBT VERILATOR
+export RISCV_TOOLCHAIN_PREFIX	?= riscv32-unknown-elf-
+
+export GTKWAVE SBT VERILATOR
 
 .PHONY: all
 all: $(RTL_GEN_FILES)
@@ -20,22 +25,36 @@ $(RTL_GEN_FILES): $(SCALA_SRCS)
 	cd $(RTL_DIR) && $(SBT) run
 	@echo "Generated verilog design: $(RTL_GEN_FILES)"
 
-.PHONY: test
-test:
-	cd $(RTL_DIR) && $(SBT) test
-
 export SIM_EXE_NAME	?= sim_exe
-SIM_EXE	:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
+SIM_EXE			:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
+
+export PROG_NAME	:= main
+export SIM_BIN		:= $(PROG_DIR)/$(PROG_NAME).bin
 
 .PHONY: sim	# verilator
-sim: $(SIM_EXE)
+sim: $(SIM_EXE) $(SIM_BIN)
 	$(MAKE) -C $(SIM_DIR)/verilator sim
 
 $(SIM_EXE): $(RTL_GEN_FILES)
 	$(MAKE) -C $(SIM_DIR)/verilator
 
+$(SIM_BIN): FORCE
+	$(MAKE) -C $(PROG_DIR)
+
+.PHONY: wave
+wave:
+	$(MAKE) -C $(SIM_DIR)/verilator wave
+
+.PHONY: test
+test:
+	cd $(RTL_DIR) && $(SBT) test
+
 .PHONY: clean
 clean:
-	rm -rf ${RTL_GEN_DIR} ${RTL_TEST_DIR}
+	$(MAKE) -C $(PROG_DIR) clean
 	$(MAKE) -C $(SIM_DIR)/verilator clean
+	rm -rf ${RTL_GEN_DIR} ${RTL_TEST_DIR}
 	cd $(RTL_DIR) && $(SBT) clean 
+
+.PHONY: FORCE
+FORCE:

@@ -20,7 +20,7 @@ class CommitRaw extends BlackBox {
     val next_pc   = Input(UInt(XLEN.W))
 
     // whether the instruction writes to register file
-    val rf_w      = Input(Bool())
+    val rf_wen    = Input(Bool())
 
     // write destination register
     val rf_waddr  = Input(UInt(XLEN_WIDTH.W))
