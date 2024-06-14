@@ -187,4 +187,9 @@ module top(
         end
     end
 
+    always @(posedge clk) begin
+        if (led_en) begin
+            sim_putchar(led);
+        end
+    end
 endmodule

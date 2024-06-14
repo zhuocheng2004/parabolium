@@ -2,8 +2,6 @@
 #include "mem.h"
 #include "print.h"
 
-#include "md5.h"
-
 int _gcd(int a, int b)
 {
 	if (a == 0)
@@ -25,8 +23,6 @@ int gcd(int a, int b)
 	return _gcd(a, b);
 }
 
-const char *md5_test_str = "Welcome to the RISC-V Specifications";
-
 int main()
 {
 	serial_init();
@@ -40,17 +36,6 @@ int main()
 	putw((unsigned int)heap_start);
 	putstr(", heap_end: ");
 	putw((unsigned int)heap_end);
-	putchar('\n');
-
-	putstr("MD5 sum for \"");
-	putstr(md5_test_str);
-	putstr("\": \n");
-
-	unsigned char result[16];
-	md5String(md5_test_str, result);
-
-	for (int i = 0; i < 16; i++)
-		putb(result[i]);
 	putchar('\n');
 
 	return 0;

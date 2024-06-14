@@ -15,7 +15,7 @@ $(SIM_EXE): $(VERILOG_SRCS) $(CPP_SRCS) $(CPPINC_SRCS)
 
 .PHONY: sim
 sim: $(SIM_EXE) $(SIM_BIN)
-	$(SIM_EXE) $(SIM_BIN) -summary -wave
+	$(SIM_EXE) $(SIM_BIN) -summary # -wave
 
 .PHONY: wave
 wave:

@@ -1,6 +1,5 @@
 
 #include "print.h"
-#include "md5.h"
 
 void serial_init(void)
 {

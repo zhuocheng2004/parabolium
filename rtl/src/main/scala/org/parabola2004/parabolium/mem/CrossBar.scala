@@ -42,7 +42,7 @@ class CrossBar(implicit config: Config = Config()) extends Module {
 
   val r_ram           = inRAMRange(araddr)
 
-  io.up.arready   := MuxCase(false.B, Seq(
+  io.up.arready   := MuxCase(true.B, Seq(
     r_ram           -> io.ram.arready
   ))
 
@@ -53,7 +53,7 @@ class CrossBar(implicit config: Config = Config()) extends Module {
 
   io.ram.rready   := r_ram && io.up.rready
 
-  io.up.rvalid    := MuxCase(false.B, Seq(
+  io.up.rvalid    := MuxCase(true.B, Seq(
     r_ram           -> io.ram.rvalid
   ))
 
@@ -67,8 +67,8 @@ class CrossBar(implicit config: Config = Config()) extends Module {
 
   val awaddr_in_aligned = io.up.awaddr(XLEN - 1, 2) ## 0.U(2.W)
   val awaddr  = Mux(io.up.awvalid, awaddr_in_aligned, RegEnable(awaddr_in_aligned, io.up.awvalid))
-  val wdata   = RegEnable(io.up.wdata, io.up.w_fire)
-  val wstrb   = RegEnable(io.up.wstrb, io.up.w_fire)
+  val wdata   = Mux(io.up.wvalid, io.up.wdata, RegEnable(io.up.wdata, io.up.w_fire))
+  val wstrb   = Mux(io.up.wvalid, io.up.wstrb, RegEnable(io.up.wstrb, io.up.w_fire))
 
   val w_stop          = awaddr === (Defines.MISC + Defines.STOP).U && wstrb(0)
 
@@ -79,7 +79,7 @@ class CrossBar(implicit config: Config = Config()) extends Module {
 
   val w_ram           = inRAMRange(awaddr)
 
-  io.up.awready := MuxCase(false.B, Seq(
+  io.up.awready := MuxCase(true.B, Seq(
     w_ram           -> io.ram.awready,
     w_stop          -> true.B,
     w_led           -> true.B,
@@ -87,7 +87,7 @@ class CrossBar(implicit config: Config = Config()) extends Module {
     w_uart_tx_data  -> true.B
   ))
 
-  io.up.wready  := MuxCase(false.B, Seq(
+  io.up.wready  := MuxCase(true.B, Seq(
     w_ram           -> io.ram.wready,
     w_stop          -> true.B,
     w_led           -> true.B,

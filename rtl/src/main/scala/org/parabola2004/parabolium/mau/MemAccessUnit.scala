@@ -55,7 +55,7 @@ class MemAccessUnit(implicit config: Config = Config()) extends Module {
   val addr_offset   = exu2mau_reg.addr(1, 0)
   val width_shift   = exu2mau_reg.width_shift
   val width_ge2     = width_shift === 2.U || width_shift === 1.U
-  val width_ge4     = width_shift === 4.U
+  val width_ge4     = width_shift === 2.U
   val wdata         = exu2mau_reg.data
 
   io.lsu.awaddr := addr_aligned
@@ -87,7 +87,7 @@ class MemAccessUnit(implicit config: Config = Config()) extends Module {
   ))
   val load_signed   = exu2mau_reg.load_signed
   // sign extend if necessary
-  val load_data     = MuxLookup(addr_offset, 0.U)(Seq(
+  val load_data     = MuxLookup(width_shift, 0.U)(Seq(
     0.U   -> Fill(24, load_data_raw(7) & load_signed)  ## load_data_raw(7, 0),
     1.U   -> Fill(16, load_data_raw(15) & load_signed) ## load_data_raw(15, 0),
     2.U   -> load_data_raw

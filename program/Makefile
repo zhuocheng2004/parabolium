@@ -20,7 +20,7 @@ gen-out-$(1):
 	${RISCV_LD} -T link.ld ${START_O} ${$(1)_OBJS} ${LIBA} -o $(1).out
 endef
 
-${PROG_NAME}_OBJS := main.o md5.o
+${PROG_NAME}_OBJS := main.o
 $(eval $(call gen-out,${PROG_NAME}))
 
 TEST_BINS := test2.bin
@@ -40,7 +40,7 @@ ${LIBA}: ${OBJS}
 
 .PHONY: test
 test: ${TEST_BINS}
-	@for bin in $^; do echo ">>>> TEST $${bin}"; ${SIM_EXE} $${bin} -debug; echo ">>>>"; done
+	@for bin in $^; do echo ">>>> TEST $${bin}"; ${SIM_EXE} $${bin} -summary; echo ">>>>"; done
 
 test1_OBJS := test1.o
 $(eval $(call gen-out,test1))

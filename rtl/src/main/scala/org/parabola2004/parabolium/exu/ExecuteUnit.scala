@@ -117,7 +117,7 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
     errorRaw.io.error_type := ErrorRaw.ERROR_EXU_INVALID.U
     errorRaw.io.error := state === wait_mau && !(opcode === OpCode.OP_IMM || opcode === OpCode.OP ||
                           opcode === OpCode.LUI || opcode === OpCode.AUIPC ||
-                          opcode === OpCode.JAL || opcode === OpCode.JALR ||
+                          opcode === OpCode.JAL || opcode === OpCode.JALR || opcode === OpCode.BRANCH ||
                           opcode === OpCode.LOAD || opcode === OpCode.STORE)
     errorRaw.setDefaultInfo()
     errorRaw.io.info0 := pc

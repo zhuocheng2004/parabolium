@@ -29,23 +29,26 @@ static unsigned int inst_cnt = 0;
 
 extern "C" u32 sim_ram_read(u32 raddr)
 {
+	u32 rdata;
 	if (raddr >= BASE && raddr < BASE + SIZE)
 	{
 		u32 addr = raddr & MASK & ~0x3u;
-		return mem[addr] + (mem[addr + 1] << 8) + (mem[addr + 2] << 16) + (mem[addr + 3] << 24);
+		rdata = mem[addr] + (mem[addr + 1] << 8) + (mem[addr + 2] << 16) + (mem[addr + 3] << 24);
 	}
 	else
 	{
 		std::cerr << "WARNING: LOAD @ " << raddr << std::endl;
-		return 0;
+		rdata = 0;
 	}
+	// std::cout << "LOAD @ " << std::hex << std::setw(8) << raddr << ", rdata=" << rdata << std::endl;
+	return rdata;
 }
 
 extern "C" void sim_ram_write(u32 waddr, u32 wdata, u8 wmask)
 {
+	// std::cout << "STORE @ " << std::hex << std::setw(8) << waddr << ", wdata=" << wdata << ", wmask=" << (int) wmask << std::endl;
 	if (!(wmask & 0xf))
 		return;
-
 	else if (waddr >= BASE && waddr < BASE + SIZE)
 	{
 		u32 addr = waddr & MASK & ~0x3u;
@@ -78,16 +81,16 @@ extern "C" void sim_error(u8 error_type, u32 info0)
 		std::cerr << "error reported on success?";
 		break;
 	case ERROR_IFU:
-		std::cerr << "error fetching instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		std::cerr << "IFU: failed to fetch instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
 		break;
 	case ERROR_EXU_INVALID:
-		std::cerr << "invalid instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		std::cerr << "EXU: invalid instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
 		break;
 	case ERROR_MAU_LOAD:
-		std::cerr << "load failed by instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		std::cerr << "MAU: load failed, instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
 		break;
 	case ERROR_MAU_STORE:
-		std::cerr << "store failed by instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		std::cerr << "MAU: store failed, instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
 		break;
 	default:
 		std::cerr << "unrecognized error type: " << (int)error_type;
@@ -101,6 +104,12 @@ extern "C" void sim_error(u8 error_type, u32 info0)
 extern "C" void sim_commit()
 {
 	inst_cnt++;
+}
+
+extern "C" void sim_putchar(u8 ch)
+{
+	putchar(ch);
+	fflush(stdout);
 }
 
 static int load_file(const char *filename)
@@ -178,6 +187,9 @@ int main(int argc, char **argv)
 
 	bool clk = false;
 	unsigned int rst_cnt = 8;
+
+	if (summary)
+		puts("==== SIMULATION START ====");
 
 	auto start_time = std::chrono::high_resolution_clock::now();
 	while (!contextp->gotFinish() && !should_stop)

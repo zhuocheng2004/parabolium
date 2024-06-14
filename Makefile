@@ -8,6 +8,8 @@ export SIM_DIR		:= $(PWD)/sim
 
 export PROG_DIR		:= $(PWD)/program
 
+FPGA_PROJECT_DIR	:= $(PWD)/fpga/gowin/Parabolium_GW2A
+
 GTKWAVE		?= gtkwave
 SBT		?= sbt
 VERILATOR	?= verilator
@@ -17,7 +19,7 @@ export RISCV_TOOLCHAIN_PREFIX	?= riscv32-unknown-elf-
 export GTKWAVE SBT VERILATOR
 
 .PHONY: all
-all: $(RTL_GEN_FILES)
+all: $(RTL_GEN_FILES) $(FPGA_PROJECT_DIR)/gen/Core.sv
 
 SCALA_SRCS	:= $(shell find $(RTL_DIR)/src/main -name '*.scala')
 
@@ -25,8 +27,11 @@ $(RTL_GEN_FILES): $(SCALA_SRCS)
 	cd $(RTL_DIR) && $(SBT) run
 	@echo "Generated verilog design: $(RTL_GEN_FILES)"
 
+$(FPGA_PROJECT_DIR)/gen/Core.sv: $(RTL_GEN_FILES)
+	cp $(RTL_GEN_DIR)/synth/Core.sv $@
+
 export SIM_EXE_NAME	?= sim_exe
-SIM_EXE			:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
+export SIM_EXE		:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
 
 export PROG_NAME	:= main
 export SIM_BIN		:= $(PROG_DIR)/$(PROG_NAME).bin
@@ -48,6 +53,10 @@ wave:
 .PHONY: test
 test:
 	cd $(RTL_DIR) && $(SBT) test
+
+.PHONY: sim_test
+sim_test:
+	$(MAKE) -C $(PROG_DIR) test
 
 .PHONY: clean
 clean:
