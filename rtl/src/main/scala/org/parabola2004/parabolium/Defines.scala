@@ -43,7 +43,7 @@ object Defines {
   /**
    * W 1B, [[MISC]]
    *
-   * write action: non-zero byte stops simulator, no effect otherwise
+   * write action: non-zero byte will stop simulator. No effect if not under simulation environment.
    */
   val STOP              = 0x0
 
@@ -63,7 +63,7 @@ object Defines {
   /**
    * W 2B, [[UART]]
    *
-   * write action: set UART controller clock division register
+   * write action: set UART controller clock division register. Two bytes must be written at once.
    */
   val UART_CLK_DIV      = 0x0
 

@@ -28,7 +28,8 @@ $(RTL_GEN_FILES): $(SCALA_SRCS)
 	@echo "Generated verilog design: $(RTL_GEN_FILES)"
 
 $(FPGA_PROJECT_DIR)/gen/Core.sv: $(RTL_GEN_FILES)
-	cp $(RTL_GEN_DIR)/synth/Core.sv $@
+	@mkdir -p $(dir $@)
+	cp $(RTL_GEN_DIR)/synth/Core.sv $(dir $@)
 
 export SIM_EXE_NAME	?= sim_exe
 export SIM_EXE		:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
@@ -60,6 +61,7 @@ sim_test:
 
 .PHONY: clean
 clean:
+	rm -rf $(FPGA_PROJECT_DIR)/gen
 	$(MAKE) -C $(PROG_DIR) clean
 	$(MAKE) -C $(SIM_DIR)/verilator clean
 	rm -rf ${RTL_GEN_DIR} ${RTL_TEST_DIR}
