@@ -1,4 +1,6 @@
 
+.tmp*
+
 # IDE Files
 .metals/
 .vscode/

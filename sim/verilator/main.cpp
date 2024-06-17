@@ -24,6 +24,7 @@ static const unsigned int BASE = 0x80000000U;
 static u8 *mem;
 
 static bool should_stop = false;
+static bool stop_error = false;
 
 static unsigned int inst_cnt = 0;
 
@@ -99,6 +100,7 @@ extern "C" void sim_error(u8 error_type, u32 info0)
 	std::cerr << std::endl;
 
 	should_stop = true;
+	stop_error = true;
 }
 
 extern "C" void sim_commit()
@@ -246,5 +248,8 @@ int main(int argc, char **argv)
 
 	delete[] mem;
 
-	return 0;
+	if (stop_error)
+		return 1;
+	else
+		return 0;
 }

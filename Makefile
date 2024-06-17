@@ -56,7 +56,7 @@ test:
 	cd $(RTL_DIR) && $(SBT) test
 
 .PHONY: sim_test
-sim_test:
+sim_test: $(SIM_EXE)
 	$(MAKE) -C $(PROG_DIR) test
 
 .PHONY: clean
