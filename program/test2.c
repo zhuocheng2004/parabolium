@@ -2,11 +2,10 @@
 #include "print.h"
 #include "string.h"
 
-int main()
-{
+int main() {
 	serial_init();
 	
-	const int N = 1000;
+	const int N = 4000;
 	char isPrime[N+1];
 
 	memset(isPrime, 1, N+1);

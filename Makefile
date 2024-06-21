@@ -1,27 +1,37 @@
 
 export RTL_DIR		:= $(PWD)/rtl
 export RTL_GEN_DIR	:= $(RTL_DIR)/generated
-RTL_GEN_FILES	:= $(RTL_GEN_DIR)/sim/Core.sv $(RTL_GEN_DIR)/synth/Tile.sv
-RTL_TEST_DIR	:= $(RTL_DIR)/test_run_dir
+RTL_GEN_FILES		:= $(RTL_GEN_DIR)/sim/Core.sv $(RTL_GEN_DIR)/synth/Tile.sv
+RTL_TEST_DIR		:= $(RTL_DIR)/test_run_dir
 
 export SIM_DIR		:= $(PWD)/sim
 
 export PROG_DIR		:= $(PWD)/program
 
-FPGA_PROJECT_DIR	:= $(PWD)/fpga/gowin/Parabolium_GW2A
+export SIM_EXE_NAME	?= sim_exe
+export SIM_EXE		:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
+
+export PROG_NAME	:= main
+export SIM_BIN		:= $(PROG_DIR)/$(PROG_NAME).bin
+
+export FPGA_PROJECT_DIR	:= $(PWD)/fpga/gowin/Parabolium_GW2A
 FPGA_TILE		:= $(FPGA_PROJECT_DIR)/gen/Tile.sv
+FPGA_BIN		:= $(FPGA_PROJECT_DIR)/gen/data.bin
+
 
 GTKWAVE		?= gtkwave
+PYTHON3		?= python3
 SBT		?= sbt
 VALGRIND	?= valgrind
 VERILATOR	?= verilator
 
 export RISCV_TOOLCHAIN_PREFIX	?= riscv32-unknown-elf-
 
-export GTKWAVE SBT VALGRIND VERILATOR
+export GTKWAVE PYTHON3 SBT VALGRIND VERILATOR
+
 
 .PHONY: all
-all: $(RTL_GEN_FILES) $(FPGA_TILE)
+all: $(RTL_GEN_FILES)
 
 SCALA_SRCS	:= $(shell find $(RTL_DIR)/src/main -name '*.scala')
 
@@ -29,15 +39,6 @@ $(RTL_GEN_FILES): $(SCALA_SRCS)
 	cd $(RTL_DIR) && $(SBT) run
 	@echo "Generated verilog design: $(RTL_GEN_FILES)"
 
-$(FPGA_TILE): $(RTL_GEN_FILES)
-	@mkdir -p $(dir $@)
-	cp $(RTL_GEN_DIR)/synth/Tile.sv $(dir $@)
-
-export SIM_EXE_NAME	?= sim_exe
-export SIM_EXE		:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
-
-export PROG_NAME	:= main
-export SIM_BIN		:= $(PROG_DIR)/$(PROG_NAME).bin
 
 .PHONY: sim	# verilator
 sim: $(SIM_EXE) $(SIM_BIN)
@@ -60,6 +61,19 @@ test:
 .PHONY: sim_test
 sim_test: $(SIM_EXE)
 	$(MAKE) -C $(PROG_DIR) test
+
+
+$(FPGA_TILE): $(RTL_GEN_FILES)
+	@mkdir -p $(dir $@)
+	cp $(RTL_GEN_DIR)/synth/Tile.sv $@
+
+$(FPGA_BIN): $(SIM_BIN)
+	@mkdir -p $(dir $@)
+	cp $(SIM_BIN) $@
+
+.PHONY: fpga
+fpga: $(FPGA_TILE) $(FPGA_BIN) FORCE
+	$(MAKE) -C $(FPGA_PROJECT_DIR)
 
 .PHONY: clean
 clean:

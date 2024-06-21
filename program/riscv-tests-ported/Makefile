@@ -91,4 +91,4 @@ all: $(tests_bin)
 
 clean:
 	rm -rf $(LOG_DIR)
-	rm -rf $(junk) .tmp_out
+	rm -rf $(junk) .tmp*

@@ -15,11 +15,11 @@
 -dyn_idiv_sel false
 -idiv_sel 1
 -dyn_fbdiv_sel false
--fbdiv_sel 2
+-fbdiv_sel 3
 -dyn_odiv_sel false
--odiv_sel 16
+-odiv_sel 8
 -dyn_da_en true
--rst_sig true
+-rst_sig false
 -rst_sig_p false
 -fclkin 27
 -clkfb_sel 0

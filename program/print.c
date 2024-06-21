@@ -1,14 +1,17 @@
 
 #include "print.h"
 
-void serial_init(void)
-{
+void serial_init(void) {
 	// 54MHZ // 9600
-	*((unsigned short *) 0xA0002000U) = 5625;
+	//const unsigned short clk_div = 5625;
+
+	// 81MHZ // 9600
+	const unsigned short clk_div = 8438;
+
+	*((unsigned short *) 0xA0002000U) = clk_div;
 }
 
-void putchar(char ch)
-{
+void putchar(char ch) {
 	// led
 	*((char *) 0xA0001004U) = ch;
 
@@ -16,30 +19,26 @@ void putchar(char ch)
 	*((char *) 0xA0002004U) = ch;
 }
 
-void putstr(const char *str)
-{
+void putstr(const char *str) {
 	while (*str)
 		putchar(*(str++));
 }
 
 static const char HEX_CHARS[] = "0123456789ABCDEF";
 
-void putw(unsigned int n)
-{
+void putw(unsigned int n) {
 	for (int i = 28; i >= 0; i -= 4)
 		putchar(HEX_CHARS[(n >> i) & 0xf]);
 }
 
-void puth(unsigned short n)
-{
+void puth(unsigned short n) {
 	putchar(HEX_CHARS[(n >> 12) & 0xf]);
 	putchar(HEX_CHARS[(n >> 8) & 0xf]);
 	putchar(HEX_CHARS[(n >> 4) & 0xf]);
 	putchar(HEX_CHARS[n & 0xf]);
 }
 
-void putb(unsigned char n)
-{
+void putb(unsigned char n) {
 	putchar(HEX_CHARS[(n >> 4) & 0xf]);
 	putchar(HEX_CHARS[n & 0xf]);
 }
