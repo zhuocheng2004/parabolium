@@ -4,6 +4,8 @@
 
 int main()
 {
+	serial_init();
+	
 	const int N = 1000;
 	char isPrime[N+1];
 

@@ -2,12 +2,11 @@ package org.parabola2004.parabolium.test.alu
 
 import chisel3._
 import chiseltest._
-import org.parabola2004.parabolium.alu.{ALU, Adder, Comparator, Shifter}
-import org.parabola2004.parabolium.inst.Funct3
-import org.parabola2004.parabolium.test.Helper
-import org.scalatest.flatspec.AnyFlatSpec
+import org.parabola2004.parabolium.pab1.alu.{ALU, Adder, Comparator, Shifter}
+import org.parabola2004.parabolium.pab1.inst.Funct3
+import org.parabola2004.parabolium.test.{AbstractTests, Helper}
 
-class ALUTests extends AnyFlatSpec with ChiselScalatestTester {
+class ALUTests extends AbstractTests {
   behavior of "Adder"
 
   it should "produce correct sum and carry for addition" in {

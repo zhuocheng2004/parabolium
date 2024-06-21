@@ -3,6 +3,8 @@
 
 int main()
 {
+	serial_init();
+	
 	putstr("Hello World!\n");
 	const int N = 20;
 	for (int i = 0; i < N; i++) {

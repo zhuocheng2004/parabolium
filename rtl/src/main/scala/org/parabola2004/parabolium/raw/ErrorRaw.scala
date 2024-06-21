@@ -2,7 +2,7 @@ package org.parabola2004.parabolium.raw
 
 import chisel3._
 import org.parabola2004.parabolium.Defines.XLEN
-import org.parabola2004.parabolium.raw.ErrorRaw.ERROR_TYPE_WIDTH
+import ErrorRaw.ERROR_TYPE_WIDTH
 
 /**
  * a raw module that informs the simulator of an unexpected error

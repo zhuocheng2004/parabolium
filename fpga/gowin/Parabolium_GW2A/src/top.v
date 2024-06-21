@@ -40,9 +40,8 @@ module top(
     reg [1:0]	ram_rresp;
 
     wire [7:0]	led;
-    wire	    led_en;
 
-    Core core (
+    Tile tile (
              .clock(clk2),
              .reset(rst2),
 
@@ -65,7 +64,6 @@ module top(
              .io_ram_rresp(ram_rresp),
 
              .io_led(led),
-             .io_led_en(led_en),
 
              .io_uart_tx(uart_tx));
 endmodule

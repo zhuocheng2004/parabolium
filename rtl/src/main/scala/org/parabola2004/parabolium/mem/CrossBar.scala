@@ -3,9 +3,10 @@ package org.parabola2004.parabolium.mem
 import chisel3._
 import chisel3.util.{Decoupled, MuxCase, RegEnable}
 import org.parabola2004.parabolium.Defines.XLEN
-import org.parabola2004.parabolium.raw.StopRaw
 import org.parabola2004.parabolium.std.AXI5LiteIO
-import org.parabola2004.parabolium.{Config, Defines}
+import org.parabola2004.parabolium.Defines
+import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.raw.StopRaw
 
 /**
  * cross bar that handles memory operations at different addresses
