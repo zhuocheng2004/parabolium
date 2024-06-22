@@ -11,8 +11,8 @@ import chisel3.util.{Decoupled, Enum, MuxLookup, Queue, RegEnable}
  * @param txQueueSize     TX data queue size
  */
 class UARTControl(val clkDivWidth: Int = 16,
-                  val defaultClkDiv: Int = 0x100,
-                  val txQueueSize: Int = 0x10) extends Module {
+                  val txQueueSize: Int = 0x10,
+                  val defaultClkDiv: Int = 0x100) extends Module {
   val io = IO(new Bundle {
     // tx data input
     val tx_data     = Flipped(Decoupled(UInt(8.W)))

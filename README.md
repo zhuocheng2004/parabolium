@@ -5,13 +5,13 @@
 
 I design this chip for learning and fun.
 
-Parabolium has one PAB1 core, which supports a core part of the RV32I instruction set including a flat memory model, basic integer operations (except multiplication/division), and load/store operations. 
+Parabolium has one Pab1 core, which supports a core part of the RV32I instruction set including a flat memory model, basic integer operations (except multiplication/division), and load/store operations. 
 
 Memory fences, CSR, ecall/ebreak, and interrupt handling are not supported yet. 
 
-Parabolium and PAB1 are mainly written in [Chisel HDL](https://www.chisel-lang.org/).
+Parabolium and Pab1 are mainly written in [Chisel HDL](https://www.chisel-lang.org/).
 
-### Features of PAB1 Core
+### Features of Pab1 Core
 
 - Basic part of RV32I
 - Multi-cycle 5-stage
@@ -20,7 +20,7 @@ Parabolium and PAB1 are mainly written in [Chisel HDL](https://www.chisel-lang.o
 
 ### Features of the Parabolium SoC
 
-- One PAB1 core
+- One Pab1 core
 - Supports up to 2G external RAM
 - One 8-bit LED output
 - One UART controller (only data output implemented) with configurable baud rate
@@ -35,7 +35,7 @@ To build SystemVerilog, just run
 make
 ```
 
-The generated Verilog files are in `rtl/generated`, with different builds. (e.g. only a PAB1 Core or the whole SoC Tile? designed for simulation, testing, or synthesis?)
+The generated Verilog files are in `rtl/generated`, with different builds. (e.g. only a Pab1 Core or the whole SoC Tile? designed for simulation, testing, or synthesis?)
 
 ## Simulation
 
@@ -55,7 +55,7 @@ make sim RISCV_TOOLCHAIN_PREFIX=<your prefix>
 
 You need `sbt` and `z3` (for formal tests) to run the tests.
 
-To test the pure Chisel design of PAB1, run
+To test the pure Chisel design of Pab1, run
 ```
 make test
 ```
@@ -86,4 +86,12 @@ Run `Synthesis` and `Place & Route` to generate a bitstream file, and use a Gowi
 
 Note: I'm currently using the board `Sipeed Tang Primer 20K (Lite)`. For other boards, you need to design different floor plans and pin connections.
 
-Currently, the design can run at 81MHZ (PAB1 clock frequency) on this FPGA board correctly. (failed to run at 108MHZ)
+Currently, the design can run at 81MHZ (Pab1 clock frequency) on this FPGA board correctly. (failed to run at 108MHZ)
+
+## Thanks
+
+Special thanks to the following projects/organizations. Many ideas and advices are from them.
+
+- [“一生一芯”计划](https://ysyx.oscc.cc/)
+- [龙芯3A6000](https://www.loongson.cn/product/show?id=26)
+- [香山 RISC-V 处理器](https://gitee.com/OpenXiangShan/XiangShan)

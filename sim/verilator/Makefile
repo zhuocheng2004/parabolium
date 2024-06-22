@@ -2,8 +2,8 @@
 export SIM_OBJ_DIR	:= $(SIM_DIR)/verilator/obj_dir
 export SIM_EXE		:= $(SIM_OBJ_DIR)/$(SIM_EXE_NAME)
 
-CPP_SRCS	:= main.cpp
-CPPINC_SRCS	:= types.h
+CPP_SRCS	:= $(shell find -type f -name '*.cpp' ! -path './obj_dir/*')
+CPPINC_SRCS	:= $(shell find -type f -name '*.h' ! -path './obj_dir/*')
 VERILOG_SRCS	:= top.v
 VERILOG_SRCS	+= $(RTL_GEN_DIR)/sim/Core.sv
 

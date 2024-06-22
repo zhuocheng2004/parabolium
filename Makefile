@@ -33,7 +33,7 @@ export GTKWAVE PYTHON3 SBT VALGRIND VERILATOR
 .PHONY: all
 all: $(RTL_GEN_FILES)
 
-SCALA_SRCS	:= $(shell find $(RTL_DIR)/src/main -name '*.scala')
+SCALA_SRCS	:= $(shell find $(RTL_DIR)/src/main -type f -name '*.scala')
 
 $(RTL_GEN_FILES): $(SCALA_SRCS)
 	cd $(RTL_DIR) && $(SBT) run
