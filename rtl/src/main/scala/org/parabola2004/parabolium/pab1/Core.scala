@@ -2,7 +2,7 @@ package org.parabola2004.parabolium.pab1
 
 import chisel3._
 import chisel3.util.RegEnable
-import org.parabola2004.parabolium.Defines.RESET_PC
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 import org.parabola2004.parabolium.pab1.exu.ExecuteUnit
 import org.parabola2004.parabolium.pab1.idu.InstDecodeUnit
 import org.parabola2004.parabolium.pab1.ifu.InstFetchUnit
@@ -20,7 +20,7 @@ import org.parabola2004.parabolium.std.AXI5LiteIO
 class Core(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
     // MEM access (AXI5-Lite)
-    val mem     = new AXI5LiteIO
+    val mem     = new AXI5LiteIO(XLEN, XLEN)
   })
 
   val ifu = Module(new InstFetchUnit)
@@ -35,7 +35,8 @@ class Core(implicit config: Config = Config()) extends Module {
 
   val reg_file = Module(new RegisterFile)
 
-  val pc = RegEnable(wbu.io.pc_next, RESET_PC.U, wbu.io.pc_wen)
+  require(config.resetPC.getWidth == Defines.XLEN, f"reset PC should be ${XLEN}-bit wide")
+  val pc = RegEnable(wbu.io.pc_next, config.resetPC, wbu.io.pc_wen)
   ifu.io.pc := pc
 
   ifu.io.ifu2idu <> idu.io.ifu2idu

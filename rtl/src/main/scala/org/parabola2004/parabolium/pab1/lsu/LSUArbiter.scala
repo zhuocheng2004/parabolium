@@ -2,19 +2,22 @@ package org.parabola2004.parabolium.pab1.lsu
 
 import chisel3._
 import chisel3.util._
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 import org.parabola2004.parabolium.std.AXI5LiteIO
 
 /**
  * an arbiter for the accesses of IFU and MAU to LSU
  *
+ * only supports aligned data read/write
+ *
  * Note: read/write is handled independently. It's the user's responsibility to avoid read/write conflict.
  */
 class LSUArbiter extends Module {
   val io = IO(new Bundle {
-    val ifu   = Flipped(new AXI5LiteIO)
-    val mau   = Flipped(new AXI5LiteIO)
+    val ifu   = Flipped(new AXI5LiteIO(XLEN, XLEN))
+    val mau   = Flipped(new AXI5LiteIO(XLEN, XLEN))
 
-    val lsu   = new AXI5LiteIO
+    val lsu   = new AXI5LiteIO(XLEN, XLEN)
   })
 
   /*

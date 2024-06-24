@@ -1,9 +1,9 @@
-package org.parabola2004.parabolium.pab1.inst
+package org.parabola2004.parabolium.inst
 
 import chisel3._
 
 /**
- * opcode constant definitions: the 7-bit data inst[6:0] for RV32I instructions
+ * opcode constant definitions: the 7-bit data inst[6:0]
  */
 object OpCode {
   val OP_IMM    = "b0010011".U    // integer register-immediate
@@ -15,4 +15,6 @@ object OpCode {
   val BRANCH    = "b1100011".U    // conditional branch
   val LOAD      = "b0000011".U
   val STORE     = "b0100011".U
+  val MISC_MEM  = "b0001111".U
+  val SYSTEM    = "b1110011".U
 }

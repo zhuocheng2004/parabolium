@@ -5,7 +5,7 @@
 //Part Number: GW2A-LV18PG256C8/I7
 //Device: GW2A-18
 //Device Version: C
-//Created Time: Fri Jun 21 22:06:38 2024
+//Created Time: Tue Jun 25 03:49:33 2024
 
 module Gowin_rPLL (clkout, lock, clkin);
 

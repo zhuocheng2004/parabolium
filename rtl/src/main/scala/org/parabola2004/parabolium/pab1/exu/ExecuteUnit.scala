@@ -2,11 +2,13 @@ package org.parabola2004.parabolium.pab1.exu
 
 import chisel3._
 import chisel3.util._
+import org.parabola2004.parabolium.inst.{Funct12, Funct3, OpCode}
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 import org.parabola2004.parabolium.pab1.alu.{ALU, Comparator}
-import org.parabola2004.parabolium.pab1.inst.{Funct3, OpCode}
 import org.parabola2004.parabolium.pab1.mau.MAUAction
 import org.parabola2004.parabolium.pab1.port.{EXU2MAUData, IDU2EXUData}
+import org.parabola2004.parabolium.raw.{ErrorRaw, StopRaw}
 
 /**
  * execution unit
@@ -32,6 +34,7 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
   val opcode  = idu2exu_reg.opcode
   val funct3  = idu2exu_reg.funct3
   val funct7  = idu2exu_reg.funct7
+  val funct12 = idu2exu_reg.funct12
   val imm     = idu2exu_reg.imm
   val data1   = idu2exu_reg.data1
   val data2   = idu2exu_reg.data2
@@ -45,7 +48,6 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
   ))
   alu.io.in2 := MuxLookup(opcode, data2)(Seq(
     OpCode.OP_IMM   -> imm,
-    OpCode.OP       -> data2,     // faster simulation?
     OpCode.AUIPC    -> imm,
     OpCode.JAL      -> imm,
     OpCode.JALR     -> imm,
@@ -103,10 +105,29 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
   // store instructions and conditional branch instructions do not write back to register file
   data_to_mau.rf_wen  := opcode =/= OpCode.STORE && opcode =/= OpCode.BRANCH
 
-  data_to_mau.pc_next := MuxLookup(opcode, pc_static_next)(Seq(
+  val pc_next = MuxLookup(opcode, pc_static_next)(Seq(
     OpCode.JAL    -> alu_out,
-    OpCode.JALR   -> alu_out,
+    OpCode.JALR   -> alu_out(XLEN - 1, 1) ## 0.U(1.W),    // set the least-significant bit to zero
     OpCode.BRANCH -> Mux(branch, alu_out, pc_static_next)
   ))
+  data_to_mau.pc_next := pc_next
   io.exu2mau.bits := data_to_mau
+
+  // `ebreak` instruction stops simulation abnormally
+  if (config.sim) {
+    val stopRaw = Module(new StopRaw)
+    stopRaw.io.stop := io.idu2exu.fire && opcode === OpCode.SYSTEM && funct12 === Funct12.EBREAK
+    stopRaw.io.ebreak := true.B
+  }
+
+  // report invalid instruction to simulator
+  if (config.sim) {
+    val errorRaw = Module(new ErrorRaw)
+    errorRaw.io.error_type := ErrorRaw.ERROR_EXU.U
+    errorRaw.io.error := state === wait_mau &&
+      ((opcode === OpCode.JAL || opcode === OpCode.JALR || opcode === OpCode.BRANCH) && pc_next(1, 0) =/= "b00".U)
+    errorRaw.setDefaultInfo()
+    errorRaw.io.info0 := 0.U
+    errorRaw.io.info1 := pc
+  }
 }

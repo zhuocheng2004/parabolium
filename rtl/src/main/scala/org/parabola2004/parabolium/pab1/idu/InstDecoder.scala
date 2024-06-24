@@ -2,25 +2,26 @@ package org.parabola2004.parabolium.pab1.idu
 
 import chisel3._
 import chisel3.util.{Fill, MuxLookup}
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
-import org.parabola2004.parabolium.pab1.inst.OpCode
+import org.parabola2004.parabolium.inst.OpCode
+import org.parabola2004.parabolium.pab1.Defines.{ILEN, REG_ADDR_WIDTH, XLEN}
 
 /**
  * a combinatorial module that decodes different info from an instruction
  */
 class InstDecoder extends Module {
   val io = IO(new Bundle {
-    val inst    = Input(UInt(XLEN.W))
+    val inst    = Input(UInt(ILEN.W))
 
     val opcode  = Output(UInt(7.W))
     val funct3  = Output(UInt(3.W))
     val funct7  = Output(UInt(7.W))
+    val funct12 = Output(UInt(12.W))
 
-    val rd      = Output(UInt(XLEN_WIDTH.W))
-    val rs1     = Output(UInt(XLEN_WIDTH.W))
-    val rs2     = Output(UInt(XLEN_WIDTH.W))
+    val rd      = Output(UInt(REG_ADDR_WIDTH.W))
+    val rs1     = Output(UInt(REG_ADDR_WIDTH.W))
+    val rs2     = Output(UInt(REG_ADDR_WIDTH.W))
 
-    /** decoded immediate value that can be used directly as input to ALU */
+    /** decoded immediate value that can be used directly as the input to ALU */
     val imm     = Output(UInt(XLEN.W))
   })
 
@@ -29,29 +30,31 @@ class InstDecoder extends Module {
   io.opcode := inst(6, 0)
   io.funct3 := inst(14, 12)
   io.funct7 := inst(31, 25)
+  io.funct12  := inst(31, 20)
 
+  // The RISC-V ISA keeps the source (`rs1` and `rs2`) and destination (`rd`) registers
+  // at the same position in all formats to simplify decoding.
   io.rd     := inst(11, 7)
   io.rs1    := inst(19, 15)
   io.rs2    := inst(24, 20)
 
-  val imm_i = inst(31, 20)
-  val imm_s = inst(31, 25) ## inst(11, 7)
-  val imm_b = inst(31) ## inst(7) ## inst(30, 25) ## inst(11, 8)
-  val imm_u = inst(31, 12)
-  val imm_j = inst(31) ## inst(19, 12) ## inst(20) ## inst(30, 21)
+  // The sign bit for all immediates is always in bit 32 of the instruction.
+  val imm_sign = inst(31)
 
-  val sign_extended_imm_i = Fill(20, imm_i(11)) ## imm_i
-  val sign_extended_imm_s = Fill(20, imm_s(11)) ## imm_s
-  val imm_u_zeros = imm_u ## 0.U(12.W)
+  val imm_i = Fill(21, imm_sign) ## inst(30, 20)
+  val imm_s = Fill(21, imm_sign) ## inst(30, 25) ## inst(11, 7)
+  val imm_b = Fill(20, imm_sign) ## inst(7) ## inst(30, 25) ## inst(11, 8) ## 0.U(1.W)
+  val imm_u = inst(31, 12) ## 0.U(12.W)
+  val imm_j = Fill(12, imm_sign) ## inst(19, 12) ## inst(20) ## inst(30, 21) ## 0.U(1.W)
 
   io.imm := MuxLookup(io.opcode, 0.U)(Seq(
-    OpCode.OP_IMM   -> sign_extended_imm_i,
-    OpCode.LUI      -> imm_u_zeros,
-    OpCode.AUIPC    -> imm_u_zeros,
-    OpCode.JAL      -> Fill(11, imm_j(19)) ## imm_j ## 0.U(1.W),    // extend sign, x2
-    OpCode.JALR     -> sign_extended_imm_i,
-    OpCode.BRANCH   -> Fill(19, imm_b(11)) ## imm_b ## 0.U(1.W),    // extend sign, x2
-    OpCode.LOAD     -> sign_extended_imm_i,
-    OpCode.STORE    -> sign_extended_imm_s
+    OpCode.OP_IMM   -> imm_i,
+    OpCode.LUI      -> imm_u,
+    OpCode.AUIPC    -> imm_u,
+    OpCode.JAL      -> imm_j,
+    OpCode.JALR     -> imm_i,
+    OpCode.BRANCH   -> imm_b,
+    OpCode.LOAD     -> imm_i,
+    OpCode.STORE    -> imm_s
   ))
 }

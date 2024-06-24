@@ -1,7 +1,6 @@
 package org.parabola2004.parabolium.std
 
 import chisel3._
-import org.parabola2004.parabolium.Defines.XLEN
 
 /*
  * Notes:
@@ -16,7 +15,9 @@ import org.parabola2004.parabolium.Defines.XLEN
  *    may be incomplete,
  *    uses active-high reset.
  */
-class AXI5LiteIO(addrWidth: Int = XLEN, dataWidth: Int = XLEN) extends Bundle {
+class AXI5LiteIO(addrWidth: Int = 32, dataWidth: Int) extends Bundle {
+  require(addrWidth > 0)
+  require(dataWidth > 0)
   require(dataWidth % 8 == 0)
 
   // write request channel

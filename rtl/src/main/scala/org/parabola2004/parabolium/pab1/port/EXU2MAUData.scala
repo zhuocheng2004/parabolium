@@ -1,7 +1,7 @@
 package org.parabola2004.parabolium.pab1.port
 
 import chisel3._
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
+import org.parabola2004.parabolium.pab1.Defines.{REG_ADDR_WIDTH, XLEN}
 
 /**
  * data passed from EXU to MAU
@@ -16,7 +16,7 @@ class EXU2MAUData extends Bundle {
   val data          = UInt(XLEN.W)  // data to store
 
   // these will be passed to WBU
-  val rf_waddr      = UInt(XLEN_WIDTH.W)
+  val rf_waddr      = UInt(REG_ADDR_WIDTH.W)
   val rf_wdata      = UInt(XLEN.W)
   val rf_wen        = Bool()        // write back to register file?
   val pc_next       = UInt(XLEN.W)  // PC of the next instruction

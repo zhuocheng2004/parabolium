@@ -2,14 +2,14 @@ package org.parabola2004.parabolium.pab1.alu
 
 import chisel3._
 import chisel3.util.MuxLookup
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
+import org.parabola2004.parabolium.inst.Funct3
 import org.parabola2004.parabolium.pab1.Config
-import org.parabola2004.parabolium.pab1.inst.Funct3
+import org.parabola2004.parabolium.pab1.Defines.{XLEN, XLEN_SHIFT}
 
 /**
- * `XLEN`-wide ALU for RV32I
+ * `XLEN`-wide ALU
  *
- * `funct3` is the 3-bit data inst[14:12] decoded from an RV32I instruction
+ * `funct3` is the 3-bit data inst[14:12] decoded from an instruction
  *
  * `sub` and `shift_arith` can be got from `funct7`
  */
@@ -41,7 +41,7 @@ class ALU(implicit config: Config = Config()) extends Module {
 
   val shifter = Module(new Shifter)
   shifter.io.in     := io.in1
-  shifter.io.shamt  := io.in2(XLEN_WIDTH - 1, 0)
+  shifter.io.shamt  := io.in2(XLEN_SHIFT - 1, 0)
   shifter.io.left   := !io.funct3(2)
   shifter.io.arith  := io.shift_arith
 

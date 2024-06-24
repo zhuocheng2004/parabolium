@@ -10,7 +10,7 @@
 typedef class Peripherals {
 public:
 	// The file content will be used to fill initial RAM
-	// If `sim` is true, we will simulate some more real hardware behaviours like delays.
+	// If `sim` is true, we will simulate some more real hardware behaviors like delays.
 	// If `sim` is false (default), we will use simple simulation that is much faster.
 	Peripherals(const std::string& filename = "", bool sim = false);
 
@@ -28,7 +28,7 @@ public:
 	u8	write_ok();
 
 	// this should be called each clock, in order to simulate
-	// hardware behaviours like delays.
+	// hardware behaviors like delays.
 	void	update();
 
 	// fatal error?

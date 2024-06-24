@@ -7,6 +7,7 @@ import chisel3._
  */
 class StopRaw extends BlackBox {
   val io = IO(new Bundle {
-    val stop  = Input(Bool())
+    val stop    = Input(Bool())
+    val ebreak  = Input(Bool())
   })
 }

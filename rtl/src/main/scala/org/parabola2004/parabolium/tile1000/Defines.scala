@@ -1,37 +1,15 @@
-package org.parabola2004.parabolium
+package org.parabola2004.parabolium.tile1000
+
+import chisel3._
 
 /**
- * constant definitions for RV32I and this core
+ * constant definitions for Parabolium 1000 Tile
  */
 object Defines {
-  /*
-   * ================================
-   * basic RV32I architecture definitions
-   *
-   * These definitions are general for all RV32I processors.
-   */
-
-  /**
-   * RV32I is 32-bit.
-   */
-  val XLEN              = 32
-
-  /**
-   * `XLEN = XLEN_WIDTH << 1`
-   */
-  val XLEN_WIDTH        = 5
-
-  /*
-   * ================================
-   * chip-specific definitions
-   *
-   * These definitions may only be for this processor design.
-   */
-
   /**
    * core reset value for program counter (PC)
    */
-  val RESET_PC          = 0x80000000L
+  val RESET_PC          = 0x80000000L.U(32.W)
 
 
   /**

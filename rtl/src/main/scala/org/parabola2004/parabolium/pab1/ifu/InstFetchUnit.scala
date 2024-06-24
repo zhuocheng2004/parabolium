@@ -2,8 +2,8 @@ package org.parabola2004.parabolium.pab1.ifu
 
 import chisel3._
 import chisel3.util._
-import org.parabola2004.parabolium.Defines.XLEN
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.{ILEN, XLEN}
 import org.parabola2004.parabolium.pab1.port.IFU2IDUData
 import org.parabola2004.parabolium.raw.ErrorRaw
 import org.parabola2004.parabolium.std.AXI5LiteIO
@@ -20,7 +20,7 @@ class InstFetchUnit(implicit config: Config = Config()) extends Module {
     val pc        = Input(UInt(XLEN.W))
 
     // memory access with LSU (AXI5-Lite)
-    val lsu       = new AXI5LiteIO
+    val lsu       = new AXI5LiteIO(XLEN, ILEN)
 
     // data passed to IDU
     val ifu2idu   = Decoupled(new IFU2IDUData)
@@ -47,13 +47,16 @@ class InstFetchUnit(implicit config: Config = Config()) extends Module {
   // data from LSU
   val lsu_data_reg  = RegEnable(io.lsu.rdata, io.lsu.r_fire)
 
+  val inst_addr_misaligned = io.pc(1, 0) =/= "b00".U
+
   // report unsuccessful read to simulator
   if (config.sim) {
     val errorRaw = Module(new ErrorRaw)
     errorRaw.io.error_type := ErrorRaw.ERROR_IFU.U
-    errorRaw.io.error := io.lsu.r_fire && io.lsu.rresp =/= AXI5LiteIO.OKAY
+    errorRaw.io.error := (io.action.fire && inst_addr_misaligned) || (io.lsu.r_fire && io.lsu.rresp =/= AXI5LiteIO.OKAY)
     errorRaw.setDefaultInfo()
-    errorRaw.io.info0 := io.pc
+    errorRaw.io.info0 := Mux(inst_addr_misaligned, 0.U, 1.U)
+    errorRaw.io.info1 := io.pc
   }
 
   // data to IDU

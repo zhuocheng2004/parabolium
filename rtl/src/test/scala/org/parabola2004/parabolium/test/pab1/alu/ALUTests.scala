@@ -1,10 +1,11 @@
-package org.parabola2004.parabolium.test.alu
+package org.parabola2004.parabolium.test.pab1.alu
 
 import chisel3._
 import chiseltest._
+import org.parabola2004.parabolium.inst.Funct3
 import org.parabola2004.parabolium.pab1.alu.{ALU, Adder, Comparator, Shifter}
-import org.parabola2004.parabolium.pab1.inst.Funct3
-import org.parabola2004.parabolium.test.{AbstractTests, Helper}
+import org.parabola2004.parabolium.test.Helper
+import org.parabola2004.parabolium.test.pab1.AbstractTests
 
 class ALUTests extends AbstractTests {
   behavior of "Adder"

@@ -43,32 +43,43 @@ extern "C" u8 sim_write_ok() {
 	return perip->write_ok();
 }
 
-extern "C" void sim_stop() {
+extern "C" void sim_stop(u8 ebreak) {
+	if (ebreak != 0) {
+		std::cerr << std::endl << " -- EBREAK -- " << std::endl;
+		stop_error = true;
+	}
 	should_stop = true;
 }
 
-extern "C" void sim_error(u8 error_type, u32 info0) {
-	std::cerr << "ERROR: ";
+extern "C" void sim_error(u8 error_type, u32 info0, u32 info1) {
+	std::cerr << std::endl << "ERROR: ";
 	switch (error_type) {
 		case ERROR_NONE:
-			std::cerr << "error reported on success?";
+			std::cerr << "error reported even on success?" << std::endl;
 			break;
 		case ERROR_IFU:
-			std::cerr << "IFU: failed to fetch instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+			std::cerr << "IFU error @ " << std::hex << std::setw(8) << std::setfill('0') << info1 << std::endl;
+			std::cerr << "  - " << (info0 & 0x1 ? "failed to fetch" : "instruction-address-misaligned") << std::endl;
 			break;
-		case ERROR_EXU_INVALID:
-			std::cerr << "EXU: invalid instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		case ERROR_IDU:
+			std::cerr << "IDU error @ " << std::hex << std::setw(8) << std::setfill('0') << info1 << std::endl;
+			std::cerr << "  - " << "invalid instruction" << std::endl;
 			break;
-		case ERROR_MAU_LOAD:
-			std::cerr << "MAU: load failed, instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		case ERROR_EXU:
+			std::cerr << "EXU error @ " << std::hex << std::setw(8) << std::setfill('0') << info1 << std::endl;
+			std::cerr << "  - " << (info0 & 0x1 ? "UNKNOWN" : "instruction-address-misaligned") << std::endl;
 			break;
-		case ERROR_MAU_STORE:
-			std::cerr << "MAU: store failed, instruction @ " << std::hex << std::setw(8) << std::setfill('0') << info0;
+		case ERROR_MAU:
+			std::cerr << "MAU error @ " << std::hex << std::setw(8) << std::setfill('0') << info1 << std::endl;
+			if (info0 & 0x1) {
+				std::cerr << "  - " << (info0 & 0x2 ? "store" : "load") << " failed" << std::endl;
+			} else {
+				std::cerr << "  - " << "address-misaligned" << std::endl;
+			}
 			break;
 		default:
-			std::cerr << "unrecognized error type: " << (int)error_type;
+			std::cerr << "unrecognized error type: " << (int)error_type << std::endl;
 	}
-	std::cerr << std::endl;
 
 	should_stop = true;
 	stop_error = true;

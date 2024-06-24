@@ -18,18 +18,20 @@ endmodule
 module ErrorRaw(
         input           error,
         input [2:0]     error_type,
-        input [31:0]    info0
+        input [31:0]    info0,
+        input [31:0]    info1
     );
     always @(posedge error) begin
-        sim_error({ 5'b0, error_type }, info0);
+        sim_error({ 5'b0, error_type }, info0, info1);
     end
 endmodule
 
 module StopRaw(
-        input	stop
+        input	stop,
+        input   ebreak
     );
     always @(posedge stop) begin
-        sim_stop();
+        sim_stop({ 7'b0, ebreak });
     end
 endmodule
 

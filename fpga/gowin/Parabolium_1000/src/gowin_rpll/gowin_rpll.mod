@@ -7,7 +7,7 @@
 
 -mod_name Gowin_rPLL
 -file_name gowin_rpll
--path /media/jerry/Data/local/work/Parabolium/fpga/gowin/Parabolium_GW2A/src/gowin_rpll/
+-path /media/jerry/Data/local/work/Parabolium/fpga/gowin/Parabolium_1000/src/gowin_rpll/
 -type PLL
 -rPll true
 -file_type vlg

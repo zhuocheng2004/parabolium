@@ -1,7 +1,7 @@
 package org.parabola2004.parabolium.pab1.alu
 
 import chisel3._
-import org.parabola2004.parabolium.Defines.XLEN
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 
 /**
  * the core part of [[Comparator]]

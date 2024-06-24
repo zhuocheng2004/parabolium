@@ -10,6 +10,6 @@ import "DPI-C" function byte sim_read_ok(output int rdata);
 import "DPI-C" function void sim_write(input int waddr, input int wdata, input byte wmask);
 import "DPI-C" function byte sim_write_ok();
 
-import "DPI-C" function void sim_stop();
-import "DPI-C" function void sim_error(input byte error_type, input int info0);
+import "DPI-C" function void sim_stop(input byte ebreak);
+import "DPI-C" function void sim_error(input byte error_type, input int info0, input int info1);
 import "DPI-C" function void sim_commit();

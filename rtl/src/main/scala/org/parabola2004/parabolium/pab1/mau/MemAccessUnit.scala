@@ -2,8 +2,8 @@ package org.parabola2004.parabolium.pab1.mau
 
 import chisel3._
 import chisel3.util._
-import org.parabola2004.parabolium.Defines.XLEN
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 import org.parabola2004.parabolium.pab1.port.{EXU2MAUData, MAU2WBUData}
 import org.parabola2004.parabolium.raw.ErrorRaw
 import org.parabola2004.parabolium.std.AXI5LiteIO
@@ -16,7 +16,7 @@ class MemAccessUnit(implicit config: Config = Config()) extends Module {
     val exu2mau   = Flipped(Decoupled(new EXU2MAUData))
 
     // memory access with LSU (AXI5-Lite)
-    val lsu       = new AXI5LiteIO
+    val lsu       = new AXI5LiteIO(XLEN, XLEN)
 
     val mau2wbu   = Decoupled(new MAU2WBUData)
   })
@@ -51,15 +51,16 @@ class MemAccessUnit(implicit config: Config = Config()) extends Module {
   val exu2mau_reg   = RegEnable(io.exu2mau.bits, io.exu2mau.fire)
 
   // build mem access action data
-  val addr_aligned  = exu2mau_reg.addr(XLEN - 1, 2) ## 0.U(2.W)
-  val addr_offset   = exu2mau_reg.addr(1, 0)
+  val addr          = exu2mau_reg.addr
+  val addr_aligned4 = addr(XLEN - 1, 2) ## 0.U(2.W)
+  val addr_offset   = addr(1, 0)
   val width_shift   = exu2mau_reg.width_shift
   val width_ge2     = width_shift === 2.U || width_shift === 1.U
   val width_ge4     = width_shift === 2.U
   val wdata         = exu2mau_reg.data
 
-  io.lsu.awaddr := addr_aligned
-  io.lsu.araddr := addr_aligned
+  io.lsu.awaddr := addr_aligned4
+  io.lsu.araddr := addr_aligned4
 
   // shift write data according to offset inside 4-byte range
   io.lsu.wdata := MuxLookup(addr_offset, 0.U)(Seq(
@@ -101,17 +102,18 @@ class MemAccessUnit(implicit config: Config = Config()) extends Module {
   data_to_wbu.pc_next   := exu2mau_reg.pc_next
   io.mau2wbu.bits := data_to_wbu
 
+  val misaligned = exu2mau_reg.action =/= MAUAction.NONE.U &&
+    ((width_shift === "b01".U && addr(0)) || (width_shift === "b10".U && addr(1, 0) =/= 0.U))
+  val error_load = io.lsu.r_fire && io.lsu.rresp =/= AXI5LiteIO.OKAY
+  val error_store = io.lsu.b_fire && io.lsu.bresp =/= AXI5LiteIO.OKAY
+
   // report load/store error to simulator
   if (config.sim) {
     val errorRaw = Module(new ErrorRaw)
-    errorRaw.io.error_type := MuxLookup(exu2mau_reg.action, ErrorRaw.ERROR_NONE.U)(Seq(
-      MAUAction.NONE.U    -> ErrorRaw.ERROR_NONE.U,
-      MAUAction.LOAD.U    -> ErrorRaw.ERROR_MAU_LOAD.U,
-      MAUAction.STORE.U   -> ErrorRaw.ERROR_MAU_STORE.U
-    ))
-    errorRaw.io.error := (io.lsu.r_fire && io.lsu.rresp =/= AXI5LiteIO.OKAY) ||
-                          (io.lsu.b_fire && io.lsu.bresp =/= AXI5LiteIO.OKAY)
+    errorRaw.io.error_type := Mux(exu2mau_reg.action === MAUAction.NONE.U, ErrorRaw.ERROR_NONE.U, ErrorRaw.ERROR_MAU.U)
+    errorRaw.io.error := misaligned || error_load || error_store
     errorRaw.setDefaultInfo()
-    errorRaw.io.info0 := exu2mau_reg.pc
+    errorRaw.io.info0 := Mux(misaligned, 0.U, Mux(error_load, false.B, true.B) ## true.B)
+    errorRaw.io.info1 := exu2mau_reg.pc
   }
 }

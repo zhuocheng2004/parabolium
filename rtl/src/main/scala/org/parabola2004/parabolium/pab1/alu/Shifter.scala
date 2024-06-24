@@ -2,8 +2,8 @@ package org.parabola2004.parabolium.pab1.alu
 
 import chisel3._
 import chisel3.util.Reverse
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.{XLEN, XLEN_SHIFT}
 
 /**
  * `XLEN`-wide shifter
@@ -16,7 +16,7 @@ import org.parabola2004.parabolium.pab1.Config
 class Shifter(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
     val in      = Input(UInt(XLEN.W))
-    val shamt   = Input(UInt(XLEN_WIDTH.W))
+    val shamt   = Input(UInt(XLEN_SHIFT.W))
     val left    = Input(Bool())
     val arith   = Input(Bool())
 

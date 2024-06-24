@@ -1,14 +1,14 @@
 package org.parabola2004.parabolium.pab1.port
 
 import chisel3._
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
+import org.parabola2004.parabolium.pab1.Defines.{ILEN, REG_ADDR_WIDTH, XLEN}
 
 /**
  * data passed from IDU to EXU
  */
 class IDU2EXUData extends Bundle {
   /** the instruction */
-  val inst    = UInt(XLEN.W)
+  val inst    = UInt(ILEN.W)
 
   /** PC of the instruction */
   val pc      = UInt(XLEN.W)
@@ -19,7 +19,9 @@ class IDU2EXUData extends Bundle {
 
   val funct7  = UInt(7.W)
 
-  val rd      = UInt(XLEN_WIDTH.W)
+  val funct12 = UInt(12.W)
+
+  val rd      = UInt(REG_ADDR_WIDTH.W)
 
   /** decoded immediate value that can be used directly as input to ALU */
   val imm     = UInt(XLEN.W)

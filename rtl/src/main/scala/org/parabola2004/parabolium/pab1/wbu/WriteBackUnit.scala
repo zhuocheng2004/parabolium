@@ -2,8 +2,8 @@ package org.parabola2004.parabolium.pab1.wbu
 
 import chisel3._
 import chisel3.util._
-import org.parabola2004.parabolium.Defines.{XLEN, XLEN_WIDTH}
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.{REG_ADDR_WIDTH, XLEN}
 import org.parabola2004.parabolium.pab1.port.MAU2WBUData
 import org.parabola2004.parabolium.raw.CommitRaw
 
@@ -14,7 +14,7 @@ class WriteBackUnit(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
     val mau2wbu = Flipped(Decoupled(new MAU2WBUData))
 
-    val rf_waddr  = Output(UInt(XLEN_WIDTH.W))
+    val rf_waddr  = Output(UInt(REG_ADDR_WIDTH.W))
     val rf_wdata  = Output(UInt(XLEN.W))
     val rf_wen    = Output(Bool())
 

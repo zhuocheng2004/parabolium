@@ -1,20 +1,21 @@
-package org.parabola2004.parabolium.mem
+package org.parabola2004.parabolium.tile1000
 
 import chisel3._
 import chisel3.util.{Decoupled, MuxCase, RegEnable}
-import org.parabola2004.parabolium.Defines.XLEN
-import org.parabola2004.parabolium.std.AXI5LiteIO
-import org.parabola2004.parabolium.Defines
 import org.parabola2004.parabolium.pab1.Config
+import org.parabola2004.parabolium.pab1.Defines.XLEN
 import org.parabola2004.parabolium.raw.StopRaw
+import org.parabola2004.parabolium.std.AXI5LiteIO
 
 /**
  * cross bar that handles memory operations at different addresses
+ *
+ * only supports aligned data read/write
  */
 class CrossBar(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
     // memory access from upstream
-    val up              = Flipped(new AXI5LiteIO)
+    val up              = Flipped(new AXI5LiteIO(XLEN, XLEN))
 
     // 8-bit LED output
     val led             = Output(UInt(8.W))
@@ -28,7 +29,7 @@ class CrossBar(implicit config: Config = Config()) extends Module {
     val uart_tx_data    = Decoupled(UInt(8.W))
 
     // physical ram
-    val ram             = new AXI5LiteIO
+    val ram             = new AXI5LiteIO(XLEN, XLEN)
   })
 
   // whether the address lies in the region of physical RAM
@@ -99,7 +100,8 @@ class CrossBar(implicit config: Config = Config()) extends Module {
   // informs simulator to stop simulating
   if (config.sim) {
     val stopRaw = Module(new StopRaw)
-    stopRaw.io.stop := w_stop && io.up.w_fire && wdata(7, 0) =/= 0.U
+    stopRaw.io.stop   := w_stop && io.up.w_fire && wdata(7, 0) =/= 0.U
+    stopRaw.io.ebreak := false.B
   }
 
   io.led              := wdata(7, 0)

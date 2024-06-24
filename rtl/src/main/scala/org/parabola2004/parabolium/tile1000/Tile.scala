@@ -1,21 +1,22 @@
-package org.parabola2004.parabolium
+package org.parabola2004.parabolium.tile1000
 
 import chisel3._
 import chisel3.util.RegEnable
-import org.parabola2004.parabolium.mem.CrossBar
-import org.parabola2004.parabolium.pab1.Core
+import org.parabola2004.parabolium.pab1.Defines.XLEN
+import org.parabola2004.parabolium.pab1.{Config, Core}
 import org.parabola2004.parabolium.perip.UARTControl
 import org.parabola2004.parabolium.std.AXI5LiteIO
+import org.parabola2004.parabolium.tile1000.Defines.RESET_PC
 
 /**
- * The SoC tile with PAB1 core, L2/L3 caches, XBar, peripherals.
+ * Parabolium 1000 tile has one PAB1 core, one XBar, several peripheral controllers (8-bit LED, UART TX).
  *
- * This module is synthesizable.
+ * This module is synthesizable (both for FPGA and ASIC).
  */
 class Tile extends Module {
   val io = IO(new Bundle {
     // MEM access
-    val ram     = new AXI5LiteIO
+    val ram     = new AXI5LiteIO(XLEN, XLEN)
 
     // 8-bit LED data output
     val led     = Output(UInt(8.W))
@@ -25,6 +26,7 @@ class Tile extends Module {
   })
 
   // PAB1 core
+  implicit val coreConfig: Config = Config(resetPC = RESET_PC)
   val core = Module(new Core)
 
   // cross bar

@@ -14,9 +14,9 @@ export SIM_EXE		:= $(SIM_DIR)/verilator/obj_dir/$(SIM_EXE_NAME)
 export PROG_NAME	:= main
 export SIM_BIN		:= $(PROG_DIR)/$(PROG_NAME).bin
 
-export FPGA_PROJECT_DIR	:= $(PWD)/fpga/gowin/Parabolium_GW2A
-FPGA_TILE		:= $(FPGA_PROJECT_DIR)/gen/Tile.sv
-FPGA_BIN		:= $(FPGA_PROJECT_DIR)/gen/data.bin
+export FPGA_DIR		:= $(PWD)/fpga/gowin/Parabolium_1000
+FPGA_TILE		:= $(FPGA_DIR)/gen/Tile.sv
+FPGA_BIN		:= $(FPGA_DIR)/gen/data.bin
 
 
 GTKWAVE		?= gtkwave
@@ -73,11 +73,11 @@ $(FPGA_BIN): $(SIM_BIN)
 
 .PHONY: fpga
 fpga: $(FPGA_TILE) $(FPGA_BIN) FORCE
-	$(MAKE) -C $(FPGA_PROJECT_DIR)
+	$(MAKE) -C $(FPGA_DIR)
 
 .PHONY: clean
 clean:
-	rm -rf $(FPGA_PROJECT_DIR)/gen
+	$(MAKE) -C $(FPGA_DIR) clean
 	$(MAKE) -C $(PROG_DIR) clean
 	$(MAKE) -C $(SIM_DIR)/verilator clean
 	rm -rf ${RTL_GEN_DIR} ${RTL_TEST_DIR}
