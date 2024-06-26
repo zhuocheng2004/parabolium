@@ -1,4 +1,4 @@
-package org.parabola2004.parabolium.test.pab1
+package org.parabola2004.parabolium.test
 
 import chiseltest._
 import org.parabola2004.parabolium.pab1.Config

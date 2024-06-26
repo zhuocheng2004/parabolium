@@ -52,12 +52,12 @@ class LSUArbiter extends Module {
 
   io.lsu.araddr   := RegEnable(Mux(io.ifu.ar_fire, io.ifu.araddr, io.mau.araddr), ar_fire);
 
-  val rdata_reg   = RegEnable(io.lsu.rdata, io.lsu.r_fire)
-  val rresp_reg   = RegEnable(io.lsu.rresp, io.lsu.r_fire)
-  io.ifu.rdata    := rdata_reg
-  io.mau.rdata    := rdata_reg
-  io.ifu.rresp    := rresp_reg
-  io.mau.rresp    := rresp_reg
+  val rdata   = RegEnable(io.lsu.rdata, io.lsu.r_fire)
+  val rresp   = RegEnable(io.lsu.rresp, io.lsu.r_fire)
+  io.ifu.rdata    := rdata
+  io.mau.rdata    := rdata
+  io.ifu.rresp    := rresp
+  io.mau.rresp    := rresp
 
   /*
    * write arbitration

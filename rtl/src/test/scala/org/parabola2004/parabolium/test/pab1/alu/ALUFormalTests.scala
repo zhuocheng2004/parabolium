@@ -2,7 +2,7 @@ package org.parabola2004.parabolium.test.pab1.alu
 
 import chiseltest.formal._
 import org.parabola2004.parabolium.pab1.alu.Shifter
-import org.parabola2004.parabolium.test.pab1.AbstractTests
+import org.parabola2004.parabolium.test.AbstractTests
 
 class ALUFormalTests extends AbstractTests with Formal {
   "Two implementations of Shifter" should "be equivalent" in {

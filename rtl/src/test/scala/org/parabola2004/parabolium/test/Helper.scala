@@ -11,6 +11,8 @@ object Helper {
 
   def randomU5Int(): Int = Random.nextInt(1 << 5)
 
+  def randomU8Int(): Int = Random.nextInt(1 << 8)
+
   def randomS32Int(): Int = Random.nextInt()
 
   def randomU32Long(): Long = Random.nextLong(1L << 32)

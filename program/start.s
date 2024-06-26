@@ -24,4 +24,4 @@ _start:
 	
 	# infinite loop
 die:
-	jal		die
+	j		die

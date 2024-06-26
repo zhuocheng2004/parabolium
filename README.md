@@ -114,4 +114,5 @@ Special thanks to the following projects/organizations. Many ideas are from them
 
 - [“一生一芯”计划](https://ysyx.oscc.cc/)
 - [龙芯3A6000](https://www.loongson.cn/product/show?id=26)
+- [STM32 MCU](https://www.st.com/en/microcontrollers-microprocessors/stm32-32-bit-arm-cortex-mcus.html)
 - [香山 RISC-V 处理器](https://gitee.com/OpenXiangShan/XiangShan)

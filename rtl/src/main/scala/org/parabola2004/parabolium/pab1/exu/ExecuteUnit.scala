@@ -29,15 +29,15 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
   io.idu2exu.ready  := state === idle
   io.exu2mau.valid  := state === wait_mau
 
-  val idu2exu_reg = RegEnable(io.idu2exu.bits, io.idu2exu.fire)
-  val pc      = idu2exu_reg.pc
-  val opcode  = idu2exu_reg.opcode
-  val funct3  = idu2exu_reg.funct3
-  val funct7  = idu2exu_reg.funct7
-  val funct12 = idu2exu_reg.funct12
-  val imm     = idu2exu_reg.imm
-  val data1   = idu2exu_reg.data1
-  val data2   = idu2exu_reg.data2
+  val idu2exu = RegEnable(io.idu2exu.bits, io.idu2exu.fire)
+  val pc      = idu2exu.pc
+  val opcode  = idu2exu.opcode
+  val funct3  = idu2exu.funct3
+  val funct7  = idu2exu.funct7
+  val funct12 = idu2exu.funct12
+  val imm     = idu2exu.imm
+  val data1   = idu2exu.data1
+  val data2   = idu2exu.data2
 
   // arithmetic/logical computation
   val alu = Module(new ALU)
@@ -93,7 +93,7 @@ class ExecuteUnit(implicit config: Config = Config()) extends Module {
 
   val pc_static_next = pc + 4.U
 
-  data_to_mau.rf_waddr  := idu2exu_reg.rd
+  data_to_mau.rf_waddr  := idu2exu.rd
   data_to_mau.rf_wdata  := MuxLookup(opcode, 0.U)(Seq(
     OpCode.OP_IMM   -> alu_out,
     OpCode.OP       -> alu_out,

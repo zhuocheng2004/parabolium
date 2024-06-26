@@ -1,6 +1,57 @@
 
-Parabolium 1000:	
-	20240625 1414
+Parabolium 1000:
+	20240626 +8 1644
+	FPGA (GW2A): [GOWIN FPGA Designer, Version V1.9.9.03 Education build(73833)]
+		resource usage:
+			logic:		1569/20736 8% (1449 LUT, 108 ALU, 2 SSRAM (RAM16))
+			register:	699/16173 5% (FF 699/15552 5%)
+			CLS:		1151/10368 11%
+			BSRAM:		10 SDPB 22%
+			PLL:		1/4 25%
+		timing:
+			constraint:	81.000 MHZ
+			Fmax:		80.652 MHZ
+			logic level:	12
+		power:
+			total:		254.763 mW
+			quiescent:	122.626
+			dynamic:	132.137
+			logic:		2.025
+			IO:		11.693
+			BSRAM:		115.036
+			PLL:		8.473	
+			junction temperature:	33.158
+			Theta JA:		32.020
+			max allowed ambient:	76.842
+			hierarchy:
+				PLL:		8.473
+				RAM:		89.233
+				RegFile:	25.811
+				EXU:		1.257
+
+	20240626 +8 1642
+	sim_test (run option: ):	as expected
+		riscv-tests:
+			rv32ui-p-ma_data:	"ERROR: MAU error @ 80000118"
+						"  - address-misaligned"
+
+	20240626 +8 1641
+	sim (run option: -summary):	as expected
+		CPI: 14.7564
+		freq: 3.3 ~ 3.5 MHZ
+
+	20240626 +8 1640
+	chisel test: all passed
+
+	20240626 +8 1640
+	verilog gen success
+
+	20240626 +8 1119
+	Running on FPGA:
+		serial output the same as simulation
+		about 3.88s
+
+	20240625 +8 1414
 	FPGA (GW2A): [GOWIN FPGA Designer, Version V1.9.9.03 Education build(73833)]
 		resource usage:
 			logic:		1411/20736 7% (1291 LUT, 108 ALU, 2 SSRAM (RAM16))
@@ -29,21 +80,19 @@ Parabolium 1000:
 				RegFile:	25.811
 				EXU:		1.120
 
-	20240625 1411
-	riscv-tests:
-		rv32ui-p-ma_data:	"ERROR: MAU error @ 80000118"
-					"  - address-misaligned"
-
-	20240625 1411
+	20240625 +8 1411
 	sim_test (run option: ):	as expected
+		riscv-tests:
+			rv32ui-p-ma_data:	"ERROR: MAU error @ 80000118"
+						"  - address-misaligned"
 
-	20240625 1409
+	20240625 +8 1409
 	sim (run option: -summary):	as expected
 		CPI: 14.7564
 		freq: 3.4 ~ 3.6 MHZ
 
-	20240625 1408
+	20240625 +8 1408
 	chisel test: all passed
 
-	20240625 1408
+	20240625 +8 1408
 	verilog gen success

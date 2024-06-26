@@ -34,9 +34,9 @@ class InstDecodeUnit(implicit config: Config = Config()) extends Module {
   io.idu2exu.valid  := state === wait_exu
 
   // data from IFU
-  val ifu2idu_reg = RegEnable(io.ifu2idu.bits, io.ifu2idu.fire)
+  val ifu2idu = RegEnable(io.ifu2idu.bits, io.ifu2idu.fire)
 
-  val inst = ifu2idu_reg.inst
+  val inst = ifu2idu.inst
 
   // decode inst into parts
   val decoder = Module(new InstDecoder)
@@ -54,7 +54,7 @@ class InstDecodeUnit(implicit config: Config = Config()) extends Module {
   // data to EXU
   val data_to_exu = Wire(new IDU2EXUData)
   data_to_exu.inst    := inst
-  data_to_exu.pc      := ifu2idu_reg.pc
+  data_to_exu.pc      := ifu2idu.pc
   data_to_exu.opcode  := opcode
   data_to_exu.funct3  := funct3
   data_to_exu.funct7  := funct7
@@ -95,6 +95,6 @@ class InstDecodeUnit(implicit config: Config = Config()) extends Module {
       (invalid_opcode || invalid_shift_imm || invalid_funct7 || invalid_load_store_funct3 ||
         invalid_system || invalid_misc_mem)
     errorRaw.setDefaultInfo()
-    errorRaw.io.info1 := ifu2idu_reg.pc
+    errorRaw.io.info1 := ifu2idu.pc
   }
 }

@@ -45,7 +45,7 @@ class InstFetchUnit(implicit config: Config = Config()) extends Module {
   io.lsu.araddr     := io.pc
 
   // data from LSU
-  val lsu_data_reg  = RegEnable(io.lsu.rdata, io.lsu.r_fire)
+  val lsu_data  = RegEnable(io.lsu.rdata, io.lsu.r_fire)
 
   val inst_addr_misaligned = io.pc(1, 0) =/= "b00".U
 
@@ -60,6 +60,6 @@ class InstFetchUnit(implicit config: Config = Config()) extends Module {
   }
 
   // data to IDU
-  io.ifu2idu.bits.inst  := lsu_data_reg
+  io.ifu2idu.bits.inst  := lsu_data
   io.ifu2idu.bits.pc    := io.pc
 }

@@ -3,8 +3,7 @@ package org.parabola2004.parabolium.test.pab1.reg
 import chisel3._
 import chiseltest._
 import org.parabola2004.parabolium.pab1.reg.RegisterFile
-import org.parabola2004.parabolium.test.Helper
-import org.parabola2004.parabolium.test.pab1.AbstractTests
+import org.parabola2004.parabolium.test.{AbstractTests, Helper}
 
 class DiffRegisterFile {
   private val reg = new Array[Long](32)
