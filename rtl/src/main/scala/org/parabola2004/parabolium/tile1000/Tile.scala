@@ -25,7 +25,7 @@ class Tile extends Module {
     val uart_tx = Output(Bool())
   })
 
-  // PAB1 core
+  // PAB1 corev
   implicit val coreConfig: Config = Config(resetPC = RESET_PC)
   val core = Module(new Core)
 
