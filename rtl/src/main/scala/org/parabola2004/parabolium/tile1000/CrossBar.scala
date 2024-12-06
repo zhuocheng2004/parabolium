@@ -14,7 +14,7 @@ import org.parabola2004.parabolium.std.AXI5LiteIO
  */
 class CrossBar(implicit config: Config = Config()) extends Module {
   val io = IO(new Bundle {
-    // memory access from upstream
+    // memory access from up
     val up              = Flipped(new AXI5LiteIO(XLEN, XLEN))
 
     // 8-bit LED output

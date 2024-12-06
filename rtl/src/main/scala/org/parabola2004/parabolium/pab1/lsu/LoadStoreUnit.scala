@@ -13,10 +13,10 @@ import org.parabola2004.parabolium.std.AXI5LiteIO
  */
 class LoadStoreUnit extends Module {
   val io = IO(new Bundle {
-    // load/store request from upstream
+    // load/store request from up
     val up    = Flipped(new AXI5LiteIO(XLEN, XLEN))
 
-    // load/store request to downstream, using physical address
+    // load/store request to down, using physical address
     val down  = new AXI5LiteIO(XLEN, XLEN)
   })
 
